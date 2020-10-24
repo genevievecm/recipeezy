@@ -13,7 +13,7 @@ export const getRecipe = (item, successCallback, errorCallback) => {
     fetch(recipeItem + item)
         .then(response => response.json())
         .then(
-            (result) => successCallback(result),
+            (result) => successCallback(result.meals[0]),
             (error) => errorCallback(error)
         );
 }
