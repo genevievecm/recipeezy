@@ -1,3 +1,5 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
     output: {
         filename: 'webpack.bundle.js',
@@ -18,5 +20,16 @@ module.exports = {
                 },
             }
         ]
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+        })
+    ],
+    devServer: {
+        contentBase: './dist',
+        historyApiFallback:{
+            index:'dist/index.html'
+        }
     }
 };

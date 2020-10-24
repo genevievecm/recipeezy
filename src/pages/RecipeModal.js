@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
 import { getRecipe } from '../_api/getRecipes';
 
+const Modal = styled.div`
+    background: red;
+`;
+
 const RecipeModal = (props) => {
+
+    console.log(props);
 
     const [ error, setError ] = useState(null);
     const [ recipe, setRecipe ] = useState({});
 
-    const recipeId = props.match.params.id;
+    const recipeId = props.id;
 
     useEffect(() => {
         getRecipe( recipeId,
@@ -19,17 +26,12 @@ const RecipeModal = (props) => {
             });
     }, [recipeId]);
 
-    function handleClose() {
-        // does not apply if you're clicking from recipe to recipe
-        props.history.goBack();
-    }
-
     return (
-        <div>
+        <Modal>
             <h1>{ recipe.strMeal }</h1>
             <p>{ recipe.strInstructions }</p>
-            <button onClick={ handleClose }>close</button>
-        </div>
+            <button onClick={ props.handleClose }>close</button>
+        </Modal>
     );
 }
 
