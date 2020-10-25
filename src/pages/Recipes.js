@@ -1,39 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { getRecipes } from '../_api/getRecipes';
-import RecipeModal from './RecipeModal';
+import { getRecipes, getRecipe } from '../_api/getRecipes';
+
+import Modal from '../components/Modal/Modal';
+import UnorderedList from '../components/UnorderList/UnorderedList';
+
 
 const Recipes = (props) => {
 
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
-    const [ recipes, setRecipes ] = useState([]);
+    const [ recipesList, setRecipesList ] = useState([]);
+    const [ recipeItem, setRecipeItem ] = useState(null);
     const [ recipeId, setRecipeId ] = useState(null);
     const [ showModal, setShowModal ] = useState(false);
+    const [ buttonId, setButtonId ] = useState(null);
+
 
     const { category } = props.match.params;
     const history = useHistory();
+    const recipeButtons = useRef([]);
 
+    // get list of recipes
     useEffect(() => {
-        // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
-        const params = new URLSearchParams(props.location.search);
-
-        if (params.has('recipeId')) {
-            const recipeValue = params.get('recipeId');
-            openModal(recipeValue);
-        }
-
         getRecipes( category,
             (data) => {
                 setLoading(false);
-                setRecipes(data);
+                setRecipesList(data);
             },
             (error) => {
                 setLoading(false);
                 setError(error);
             });
     }, []);
+
+    // get sinlge recipe
+    useEffect(() => {
+        // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+        const params = new URLSearchParams(props.location.search);
+
+        if (params.has('recipeId')) {
+            openModal(params.get('recipeId'));
+        }
+
+        if (recipeId) {
+            getRecipe( recipeId,
+                (data) => {
+                    setRecipeItem(data);
+                },
+                (error) => {
+                    setError(error);
+                });
+        }
+    }, [recipeId]);
+
+    function handleClick(recipeId, buttonId) {
+        openModal(recipeId);
+        setButtonId(buttonId);
+    }
 
     function openModal(id) {
         setShowModal(true);
@@ -47,7 +72,11 @@ const Recipes = (props) => {
 
     function closeModal() {
         setRecipeId(null);
+        setRecipeItem(null);
         setShowModal(false);
+
+        // put focus back on the last clicked recipe button
+        recipeButtons.current[buttonId].focus();
 
         history.push({
             location: category
@@ -56,20 +85,34 @@ const Recipes = (props) => {
 
     return (
         <div>
-            <ul>
-                {   recipes.length > 0 &&
-                    recipes.map((rec) => {
+            <UnorderedList>
+                {   recipesList.length > 0 &&
+                    recipesList.map((rec, index) => {
                         return (
                             <li key={ rec.idMeal }>
-                                <button onClick={ () => openModal(rec.idMeal) }>{ rec.strMeal }</button>
+                                <button
+                                    ref={ ref => recipeButtons.current[index] = ref }
+                                    onClick={ () => handleClick(rec.idMeal, index) }
+                                >
+                                    { rec.strMeal }
+                                </button>
                             </li>
                         );
                     })
                 }
-            </ul>
+            </UnorderedList>
             {
                 showModal &&
-                <RecipeModal id={ recipeId } handleClose={ () => closeModal() } />
+                <Modal handleClose={ () => closeModal() } >
+                    {
+                        recipeItem &&
+                        <Fragment>
+                            <h1>{ recipeItem.strMeal }</h1>
+                            <p>{ recipeItem.strInstructions }</p>
+                            <a href={ recipeItem.strSource } target="_blank">Recipe Source</a>
+                        </Fragment>
+                    }
+                </Modal>
             }
         </div>
     );
