@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
+import { palette } from "../_utils";
 import { getCategories } from '../_api/getCategories';
 
-const Categories = () => {
+import { UnorderedInlineList, Card } from '../components';
+
+
+export const Categories = () => {
 
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
@@ -23,24 +28,36 @@ const Categories = () => {
 
     if (!loading) {
         return(
-            <ul>
+            <>
+            <p style={{ textAlign: "center" }}>Browse categories to discover recipes from around the world!</p>
+            <UnorderedInlineList
+                largeRow="4"
+                smallRow="2"
+                margin="30px 0"
+            >
                 {categories.map((cat) => {
                     return (
                         <li key={ cat.idCategory }>
-                            <Link to={`/recipes/${cat.strCategory}`}>
-                                { cat.strCategory }
-                            </Link>
+                            <Card textAlign="center">
+                                <img
+                                    className="decorative-image"
+                                    src={ cat.strCategoryThumb }
+                                    loading="lazy"
+                                    aria-hidden
+                                />
+                                <h4>{ cat.strCategory }</h4>
+                                <Link to={`/recipes/${cat.strCategory}`}>See Recipes</Link>
+                            </Card>
                         </li>
                     );
                 })}
-            </ul>
+            </UnorderedInlineList>
+            </>
         );
     } else {
         return (
-            <h1>loading</h1>
-        )
+            <p style={{ textAlign: "center" }}>Loading categories...</p>
+        );
     }
 
 };
-
-export default Categories;

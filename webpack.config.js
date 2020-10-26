@@ -7,16 +7,20 @@ module.exports = {
     },
     entry: './src/index.js',
     module: {
-        rules: [
-            {
-                // looks at the babel.config which determines how code should be transpiled
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader'
-                },
-            }
-        ]
+        rules: [{
+            // looks at the babel.config which determines how code should be transpiled
+            test: /\.jsx?$/,
+            exclude: /node_modules/,
+            use: {
+                loader: 'babel-loader'
+            },
+        }, {
+            test: /\.(png|jpe?g|gif)$/i,
+            exclude: /node_modules/,
+            use: [{
+                loader: 'file-loader',
+            }]
+        }, ]
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -25,8 +29,8 @@ module.exports = {
     ],
     devServer: {
         contentBase: './dist',
-        historyApiFallback:{
-            index:'dist/index.html'
+        historyApiFallback: {
+            index: 'dist/index.html'
         }
     }
 };

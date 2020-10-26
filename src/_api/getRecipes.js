@@ -13,35 +13,32 @@ export const getRecipe = (item, successCallback, errorCallback) => {
     fetch(recipeItem + item)
         .then(response => response.json())
         .then(
-            (result) => successCallback(result.meals[0]),
+            (result) => successCallback(normalizeRecipe(result.meals)[0]),
             (error) => errorCallback(error)
         );
 }
 
-const normalizeRecipe = () => {
-    const meal = Object.keys(meals);
-    const rest = meal.reduce((acc, curr) => {
-        debugger;
-        if (/str(Ingredient|Measure)/.test(curr)) return acc;
-        return {
-            [curr]: meal[curr],
-            ...acc
+const normalizeRecipe = (meals) => {
+    return meals.map(meal => {
+        const rest = Object.keys(meal).reduce((acc, curr) => {
+            if (/str(Ingredient|Measure)/.test(curr)) return acc;
+            return {
+                [curr]: meal[curr],
+                ...acc
+            }
+        }, {});
+        let ingredients = [];
+        for (let i = 1; i <= 20; i++) {
+            if (!meal[`strIngredient${i}`]) continue;
+            ingredients.push({
+                ingredient: meal[`strIngredient${i}`],
+                measurement: meal[`strMeasure${i}`]
+            });
         }
-    }, {});
 
-    console.log(rest)
-    let ingredients = [];
-
-    for (let i = 1; i <= 20; i++) {
-        if (!meal[`strIngredient${i}`]) continue;
-        ingredients.push({
-            ingredient: meal[`strIngredient${i}`],
-            measurement: meal[`strMeasure${i}`]
-        });
-    }
-
-    return {
-        ...rest,
-        ingredients,
-    }
+        return {
+            ...rest,
+            ingredients,
+        }
+    });
 }

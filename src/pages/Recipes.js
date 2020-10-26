@@ -3,11 +3,10 @@ import { useHistory } from 'react-router-dom';
 
 import { getRecipes, getRecipe } from '../_api/getRecipes';
 
-import Modal from '../components/Modal/Modal';
-import UnorderedList from '../components/UnorderList/UnorderedList';
+import { UnorderedInlineList, Modal, Card } from '../components';
+import { palette } from '../_utils';
 
-
-const Recipes = (props) => {
+export const Recipes = (props) => {
 
     const [ error, setError ] = useState(null);
     const [ loading, setLoading ] = useState(true);
@@ -15,14 +14,14 @@ const Recipes = (props) => {
     const [ recipeItem, setRecipeItem ] = useState(null);
     const [ recipeId, setRecipeId ] = useState(null);
     const [ showModal, setShowModal ] = useState(false);
-    const [ buttonId, setButtonId ] = useState(null);
+    const [ buttonId, setButtonId ] = useState(false);
 
 
     const { category } = props.match.params;
     const history = useHistory();
     const recipeButtons = useRef([]);
 
-    // get list of recipes
+    // handles list of recipes
     useEffect(() => {
         getRecipes( category,
             (data) => {
@@ -35,11 +34,12 @@ const Recipes = (props) => {
             });
     }, []);
 
-    // get sinlge recipe
+    // handles single recipe
     useEffect(() => {
         // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
         const params = new URLSearchParams(props.location.search);
 
+        // handles if the user visits the recipe url directly
         if (params.has('recipeId')) {
             openModal(params.get('recipeId'));
         }
@@ -47,6 +47,7 @@ const Recipes = (props) => {
         if (recipeId) {
             getRecipe( recipeId,
                 (data) => {
+                    console.log(data)
                     setRecipeItem(data);
                 },
                 (error) => {
@@ -55,9 +56,9 @@ const Recipes = (props) => {
         }
     }, [recipeId]);
 
-    function handleClick(recipeId, buttonId) {
-        openModal(recipeId);
+    function handleSelectedRecipe(recipeId, buttonId) {
         setButtonId(buttonId);
+        openModal(recipeId);
     }
 
     function openModal(id) {
@@ -76,7 +77,13 @@ const Recipes = (props) => {
         setShowModal(false);
 
         // put focus back on the last clicked recipe button
-        recipeButtons.current[buttonId].focus();
+        // TODO: determine the buttonId corresponding to modal if a refresh happens on recipe modal,
+        // otherwise keyboard focus is lost when returning back to the recipe list
+        if (buttonId) {
+            recipeButtons.current[buttonId].focus();
+        } else {
+            recipeButtons.current[0].focus();
+        }
 
         history.push({
             location: category
@@ -85,31 +92,62 @@ const Recipes = (props) => {
 
     return (
         <div>
-            <UnorderedList>
-                {   recipesList.length > 0 &&
-                    recipesList.map((rec, index) => {
-                        return (
-                            <li key={ rec.idMeal }>
+            {   category &&
+                <p style={{ textAlign: "center" }}>{ category } Recipes</p>
+            }
+            <UnorderedInlineList
+                largeRow="3"
+                smallRow="2"
+                margin="30px 0"
+            >{
+                recipesList.length > 0 &&
+                recipesList.map((rec, index) => {
+                    return (
+                        <li key={ rec.idMeal }>
+                            <Card textAlign="center">
+                                <h4 className="flex-title">{ rec.strMeal }</h4>
+                                {
+                                    // need to use an actual button element because ref won't work the same on a functional component: https://reactjs.org/docs/refs-and-the-dom.html
+                                }
                                 <button
+                                    className="card-cta open-modal"
                                     ref={ ref => recipeButtons.current[index] = ref }
-                                    onClick={ () => handleClick(rec.idMeal, index) }
+                                    onClick={ () => handleSelectedRecipe(rec.idMeal, index) }
                                 >
-                                    { rec.strMeal }
+                                    View Recipe
                                 </button>
-                            </li>
-                        );
-                    })
-                }
-            </UnorderedList>
+                            </Card>
+                        </li>
+                    );
+                })
+            }</UnorderedInlineList>
             {
                 showModal &&
-                <Modal handleClose={ () => closeModal() } >
+                <Modal
+                    title={recipeItem ? recipeItem.strMeal : ''}
+                    isOpen={showModal}
+                    handleClose={() => closeModal()}
+                >
                     {
                         recipeItem &&
                         <Fragment>
-                            <h1>{ recipeItem.strMeal }</h1>
+                            <img
+                                src={recipeItem.strMealThumb}
+                                style={{ backgroundColor: palette.secondaryColor, float: 'right', width: '50%', padding: '0 0 10px 10px', marginLeft: '10px' }}
+                                aria-hidden
+                            />
                             <p>{ recipeItem.strInstructions }</p>
-                            <a href={ recipeItem.strSource } target="_blank">Recipe Source</a>
+                            <ul>
+                                {
+                                    recipeItem.ingredients.map((item) => {
+                                        return <li>{item.measurement} {item.ingredient}</li>
+                                    })
+                                }
+                            </ul>
+                            {
+                                recipeItem.strSource &&
+                                <a href={ recipeItem.strSource } target="_blank">See Original Recipe Source</a>
+                            }
                         </Fragment>
                     }
                 </Modal>
@@ -117,5 +155,3 @@ const Recipes = (props) => {
         </div>
     );
 }
-
-export default Recipes;
