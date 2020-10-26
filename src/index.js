@@ -53,6 +53,7 @@ const Header = styled.header`
 
 const App = () => {
     return (
+        <>
         <Router>
             <Header>
                 <Link to="/">Recipeezy</Link>
@@ -64,8 +65,9 @@ const App = () => {
                     <Route component={ NotFound } />
                 </Switch>
             </main>
-            <GlobalStyle />
         </Router>
+        <GlobalStyle />
+        </>
     )
 }
 
