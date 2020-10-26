@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { typeScale, primaryFont } from '../_utils/fonts';
+import { palette, typeScale, primaryFont } from '../_utils';
 
 const ModalOverlay = styled.div`
     position: fixed;
@@ -22,6 +22,14 @@ const ModalContent = styled.div`
     border: 1px solid #888;
     width: 80%;
     min-height: 50vh;
+`;
+
+const StyledModalImage = styled.img`
+    background-color: ${palette.secondaryColor};
+    float: right;
+    width: 25%;
+    padding: 0 0 10px 10px;
+    margin: 0 0 20px 20px;
 `;
 
 const ClostButton = styled.button`
@@ -45,14 +53,15 @@ export const Modal = (props) => {
     }, []);
 
     return (
-        <ModalOverlay>
+        <ModalOverlay
+        >
             <ModalContent
                 role="dialog"
                 aria-modal="true"
-                aria-hidden={!props.isOpen}
+                aria-hidden={ !props.isOpen }
+                aria-labelledby={ props.title }
             >
                 <ClostButton
-                    className="open-modal"
                     onClick={ props.handleClose }
                     ref={ closeButton }
                 >
@@ -64,3 +73,14 @@ export const Modal = (props) => {
         </ModalOverlay>
     );
 }
+
+export const ModalImage = (props) => {
+    return (
+        <StyledModalImage
+            src={ props.src }
+            alt={ props.alt || '' }
+            aria-hidden={ props.isDecorative }
+            loading="lazy"
+        />
+    );
+};

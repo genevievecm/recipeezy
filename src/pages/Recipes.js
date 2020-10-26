@@ -3,8 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import { getRecipes, getRecipe } from '../_api/getRecipes';
 
-import { UnorderedInlineList, Modal, Card } from '../components';
-import { palette } from '../_utils/colors';
+import { UnorderedInlineList, Modal, ModalImage, Card } from '../components';
 
 export const Recipes = (props) => {
 
@@ -64,6 +63,12 @@ export const Recipes = (props) => {
         setShowModal(true);
         setRecipeId(id);
 
+        // TODO: determine the buttonId corresponding to modal if a refresh happens on recipe modal,
+        // otherwise keyboard focus is lost when returning back to the recipe list
+        if (!buttonId) {
+            setButtonId(0)
+        }
+
         history.push({
             location: category,
             search: `?recipeId=${id}`
@@ -76,82 +81,82 @@ export const Recipes = (props) => {
         setShowModal(false);
 
         // put focus back on the last clicked recipe button
-        // TODO: determine the buttonId corresponding to modal if a refresh happens on recipe modal,
-        // otherwise keyboard focus is lost when returning back to the recipe list
-        if (buttonId) {
-            recipeButtons.current[buttonId].focus();
-        } else {
-            recipeButtons.current[0].focus();
-        }
+        recipeButtons.current[buttonId].focus();
 
         history.push({
             location: category
         });
     }
 
-    return (
-        <div>
-            {   category &&
-                <p style={{ textAlign: "center" }}>{ category } Recipes</p>
-            }
-            <UnorderedInlineList
-                largeRow="3"
-                smallRow="2"
-                margin="30px 0"
-            >{
-                recipesList.length > 0 &&
-                recipesList.map((rec, index) => {
-                    return (
-                        <li key={ rec.idMeal }>
-                            <Card textAlign="center">
-                                <h4 className="flex-title">{ rec.strMeal }</h4>
+    if (!loading) {
+        return (
+            <>
+                {   category &&
+                    <p style={{ textAlign: "center" }}>{ category } Recipes</p>
+                }
+                <UnorderedInlineList
+                    largeRow="3"
+                    smallRow="2"
+                    margin="30px 0"
+                    isVisible={showModal}
+                >{
+                    recipesList.length > 0 &&
+                    recipesList.map((rec, index) => {
+                        return (
+                            <li key={ rec.idMeal }>
+                                <Card textAlign="center">
+                                    <h4 className="flex-title">{ rec.strMeal }</h4>
+                                    {
+                                        // need to use an actual button element because ref won't work the same on a functional component: https://reactjs.org/docs/refs-and-the-dom.html
+                                    }
+                                    <button
+                                        className="card-cta opens-modal"
+                                        ref={ ref => recipeButtons.current[index] = ref }
+                                        onClick={ () => handleSelectedRecipe(rec.idMeal, index) }
+                                    >
+                                        View Recipe
+                                    </button>
+                                </Card>
+                            </li>
+                        );
+                    })
+                }</UnorderedInlineList>
+                {
+                    showModal &&
+                    <Modal
+                        title={recipeItem ? recipeItem.strMeal : ''}
+                        isOpen={showModal}
+                        handleClose={() => closeModal()}
+                    >
+                        {
+                            recipeItem &&
+                            <>
+                                <ModalImage
+                                    src={recipeItem.strMealThumb}
+                                    isDecorative="true"
+                                    loading="lazy"
+                                />
+                                <p>{ recipeItem.strInstructions }</p>
+                                <ul>
+                                    {
+                                        recipeItem.ingredients.map((item) => {
+                                            return <li>{item.measurement} {item.ingredient}</li>
+                                        })
+                                    }
+                                </ul>
                                 {
-                                    // need to use an actual button element because ref won't work the same on a functional component: https://reactjs.org/docs/refs-and-the-dom.html
+                                    recipeItem.strSource &&
+                                    <a href={ recipeItem.strSource } target="_blank">See Original Recipe Source</a>
                                 }
-                                <button
-                                    className="card-cta open-modal"
-                                    ref={ ref => recipeButtons.current[index] = ref }
-                                    onClick={ () => handleSelectedRecipe(rec.idMeal, index) }
-                                >
-                                    View Recipe
-                                </button>
-                            </Card>
-                        </li>
-                    );
-                })
-            }</UnorderedInlineList>
-            {
-                showModal &&
-                <Modal
-                    title={recipeItem ? recipeItem.strMeal : ''}
-                    isOpen={showModal}
-                    handleClose={() => closeModal()}
-                >
-                    {
-                        recipeItem &&
-                        <Fragment>
-                            <img
-                                src={recipeItem.strMealThumb}
-                                style={{ backgroundColor: palette.secondaryColor, float: 'right', width: '50%', padding: '0 0 10px 10px', marginLeft: '10px' }}
-                                loading="lazy"
-                                aria-hidden
-                            />
-                            <p>{ recipeItem.strInstructions }</p>
-                            <ul>
-                                {
-                                    recipeItem.ingredients.map((item) => {
-                                        return <li>{item.measurement} {item.ingredient}</li>
-                                    })
-                                }
-                            </ul>
-                            {
-                                recipeItem.strSource &&
-                                <a href={ recipeItem.strSource } target="_blank">See Original Recipe Source</a>
-                            }
-                        </Fragment>
-                    }
-                </Modal>
-            }
-        </div>
-    );
+                            </>
+                        }
+                    </Modal>
+                }
+            </>
+        );
+    } else {
+        return (
+            <p style={{ textAlign: "center" }}>Loading recipes...</p>
+        );
+    }
 }

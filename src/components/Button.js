@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { palette } from '../_utils/colors';
+import { palette } from '../_utils';
 
 const StyledButton = styled.button`
     background: ${palette.secondaryColor};

@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { palette } from '../_utils/colors';
-import { primaryFont } from '../_utils/fonts';
+import { palette, primaryFont } from '../_utils';
 
 const StyledBlock = styled.div`
     border: 1px solid ${palette.secondaryColor};
@@ -27,11 +26,11 @@ const StyledBlock = styled.div`
 
     /* float to the bottom of the card */
     .card-cta {
-        margin-top: auto;
+        margin: auto;
     }
 
     // TODO: ideally add these to a styled Button component; refs don't work the same on functional components
-    .open-modal {
+    .opens-modal {
         background: ${palette.secondaryColor};
         border: 2px solid ${palette.secondaryColor};
         cursor: pointer;

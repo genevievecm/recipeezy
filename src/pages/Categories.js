@@ -44,7 +44,7 @@ export const Categories = () => {
                                     aria-hidden
                                 />
                                 <h4>{ cat.strCategory }</h4>
-                                <Link to={`/recipes/${cat.strCategory}`}>See Recipes</Link>
+                                <Link className="card-cta" to={`/recipes/${cat.strCategory}`}>See Recipes</Link>
                             </Card>
                         </li>
                     );

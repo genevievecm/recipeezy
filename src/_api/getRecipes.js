@@ -18,6 +18,7 @@ export const getRecipe = (item, successCallback, errorCallback) => {
         );
 }
 
+// https://gist.github.com/danew/072a61343dfd103e21f7c9168627a01c
 const normalizeRecipe = (meals) => {
     return meals.map(meal => {
         const rest = Object.keys(meal).reduce((acc, curr) => {

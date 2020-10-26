@@ -3,9 +3,8 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { GlobalStyle } from "./_utils/Global";
-import { logoFont, typeScale } from './_utils/fonts';
-import { palette } from './_utils/colors';
+
+import { GlobalStyle, logoFont, typeScale, palette } from "./_utils";
 
 import { Categories, Recipes, NotFound } from './pages';
 
@@ -55,22 +54,19 @@ const Header = styled.header`
 
 const App = () => {
     return (
-        <>
-        <GlobalStyle />
         <Router>
             <Header>
                 <Link to="/">Recipeezy</Link>
             </Header>
             <main>
                 <Switch>
-
                     <Route exact path="/" component={ Categories } />
                     <Route path="/recipes/:category" component={ Recipes } />
                     <Route component={ NotFound } />
                 </Switch>
             </main>
+            <GlobalStyle />
         </Router>
-        </>
     )
 }
 
