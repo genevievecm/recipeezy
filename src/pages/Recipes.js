@@ -62,7 +62,6 @@ export const Recipes = (props) => {
     }, [recipeId]);
 
     function handleSelectedRecipe(recipeId, buttonId) {
-        console.log('handleSelectedRecipe', buttonId)
         setButtonId(buttonId);
         openModal(recipeId);
     }

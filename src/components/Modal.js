@@ -27,9 +27,14 @@ const ModalContent = styled.div`
 const StyledModalImage = styled.img`
     background-color: ${palette.secondaryColor};
     float: right;
-    width: 25%;
+    width: 200px;
+    height: 200px;
     padding: 0 0 10px 10px;
     margin: 0 0 20px 20px;
+
+    @media (max-width: 640px) {
+        float: none;
+    }
 `;
 
 const ClostButton = styled.button`
