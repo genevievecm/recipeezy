@@ -3,8 +3,6 @@ import styled from 'styled-components';
 
 import { palette } from '../_utils';
 
-console.log(palette);
-
 const StyledButton = styled.button`
     background: ${palette.secondaryColor};
     border: 2px solid ${palette.secondaryColor};

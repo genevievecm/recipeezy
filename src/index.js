@@ -54,19 +54,20 @@ const Header = styled.header`
 const App = () => {
     return (
         <>
+        <GlobalStyle />
         <Router>
             <Header>
                 <Link to="/">Recipeezy</Link>
             </Header>
             <main>
                 <Switch>
+
                     <Route exact path="/" component={ Categories } />
                     <Route path="/recipes/:category" component={ Recipes } />
                     <Route component={ NotFound } />
                 </Switch>
             </main>
         </Router>
-        <GlobalStyle />
         </>
     )
 }
