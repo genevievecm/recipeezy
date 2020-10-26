@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { GlobalStyle, logoFont, typeScale, palette } from "./_utils";
+import { GlobalStyle } from "./_utils/Global";
+import { logoFont, typeScale } from './_utils/fonts';
+import { palette } from './_utils/colors';
 
 import { Categories, Recipes, NotFound } from './pages';
 

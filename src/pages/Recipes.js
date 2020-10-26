@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { getRecipes, getRecipe } from '../_api/getRecipes';
 
 import { UnorderedInlineList, Modal, Card } from '../components';
-import { palette } from '../_utils';
+import { palette } from '../_utils/colors';
 
 export const Recipes = (props) => {
 
@@ -47,7 +47,6 @@ export const Recipes = (props) => {
         if (recipeId) {
             getRecipe( recipeId,
                 (data) => {
-                    console.log(data)
                     setRecipeItem(data);
                 },
                 (error) => {

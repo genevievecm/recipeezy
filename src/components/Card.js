@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { palette, primaryFont } from '../_utils';
+import { palette } from '../_utils/colors';
+import { primaryFont } from '../_utils/fonts';
 
 const StyledBlock = styled.div`
     border: 1px solid ${palette.secondaryColor};

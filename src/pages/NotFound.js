@@ -3,6 +3,6 @@ import React from 'react';
 export const NotFound = () => {
 
     return (
-        <h1>NOT FOUND</h1>
+        <h1 style={{ textAlign: 'center' }}>Page not found.</h1>
     );
 }

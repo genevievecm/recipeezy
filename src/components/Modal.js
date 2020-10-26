@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { typeScale, primaryFont } from '../_utils';
+import { typeScale, primaryFont } from '../_utils/fonts';
 
 const ModalOverlay = styled.div`
     position: fixed;
