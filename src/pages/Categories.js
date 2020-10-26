@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
-import { palette } from "../_utils";
 import { getCategories } from '../_api/getCategories';
 
 import { UnorderedInlineList, Card } from '../components';
