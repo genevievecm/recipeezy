@@ -1,5 +1,5 @@
-import { createGlobalStyle } from "styled-components";
-import { primaryFont } from "./fonts";
+import { createGlobalStyle } from 'styled-components';
+import { primaryFont } from './fonts';
 import { palette } from './colors'
 
 /*
@@ -34,14 +34,14 @@ export const GlobalStyle = createGlobalStyle`
     // TODO: extract this into a Link component
     a {
         text-decoration: none;
-        color: ${palette.primaryColor};
+        color: ${palette[primaryColor]};
         padding-bottom: 2px;
-        border-bottom: 2px dotted ${palette.primaryColor};
+        border-bottom: 2px dotted ${palette[primaryColor]};
         transition:all 0.3s ease;
 
         &:hover, &:focus {
-            color: ${palette.primaryColor};
-            border-bottom: 2px dotted ${palette.secondaryColor};
+            color: ${palette[primaryColor]};
+            border-bottom: 2px dotted ${palette[secondaryColor]};
         }
     }
 `;
