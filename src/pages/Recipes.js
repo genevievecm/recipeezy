@@ -134,6 +134,7 @@ export const Recipes = (props) => {
                             <img
                                 src={recipeItem.strMealThumb}
                                 style={{ backgroundColor: palette.secondaryColor, float: 'right', width: '50%', padding: '0 0 10px 10px', marginLeft: '10px' }}
+                                loading="lazy"
                                 aria-hidden
                             />
                             <p>{ recipeItem.strInstructions }</p>
