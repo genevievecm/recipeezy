@@ -43,6 +43,13 @@ export const Recipes = (props) => {
             openModal(params.get('recipeId'));
         }
 
+        // listen for ESC key, to close modal
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        }, false);
+
         if (recipeId) {
             getRecipe( recipeId,
                 (data) => {
@@ -55,6 +62,7 @@ export const Recipes = (props) => {
     }, [recipeId]);
 
     function handleSelectedRecipe(recipeId, buttonId) {
+        console.log('handleSelectedRecipe', buttonId)
         setButtonId(buttonId);
         openModal(recipeId);
     }
@@ -62,12 +70,6 @@ export const Recipes = (props) => {
     function openModal(id) {
         setShowModal(true);
         setRecipeId(id);
-
-        // TODO: determine the buttonId corresponding to modal if a refresh happens on recipe modal,
-        // otherwise keyboard focus is lost when returning back to the recipe list
-        if (!buttonId) {
-            setButtonId(0)
-        }
 
         history.push({
             location: category,
@@ -81,7 +83,13 @@ export const Recipes = (props) => {
         setShowModal(false);
 
         // put focus back on the last clicked recipe button
-        recipeButtons.current[buttonId].focus();
+        // TODO: determine the buttonId corresponding to modal if a refresh happens on recipe modal,
+        // otherwise keyboard focus is lost when returning back to the recipe list
+        if (buttonId) {
+            recipeButtons.current[buttonId].focus();
+        } else {
+            recipeButtons.current[0].focus();
+        }
 
         history.push({
             location: category
@@ -98,7 +106,6 @@ export const Recipes = (props) => {
                     largeRow="3"
                     smallRow="2"
                     margin="30px 0"
-                    isVisible={showModal}
                 >{
                     recipesList.length > 0 &&
                     recipesList.map((rec, index) => {

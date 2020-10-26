@@ -43,6 +43,17 @@ const ClostButton = styled.button`
     }
 `;
 
+export const ModalImage = (props) => {
+    return (
+        <StyledModalImage
+            src={ props.src }
+            alt={ props.alt || '' }
+            aria-hidden={ props.isDecorative }
+            loading="lazy"
+        />
+    );
+};
+
 export const Modal = (props) => {
 
     const closeButton = useRef(null);
@@ -58,7 +69,6 @@ export const Modal = (props) => {
             <ModalContent
                 role="dialog"
                 aria-modal="true"
-                aria-hidden={ !props.isOpen }
                 aria-labelledby={ props.title }
             >
                 <ClostButton
@@ -73,14 +83,3 @@ export const Modal = (props) => {
         </ModalOverlay>
     );
 }
-
-export const ModalImage = (props) => {
-    return (
-        <StyledModalImage
-            src={ props.src }
-            alt={ props.alt || '' }
-            aria-hidden={ props.isDecorative }
-            loading="lazy"
-        />
-    );
-};

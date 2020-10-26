@@ -40,7 +40,6 @@ export const UnorderedInlineList = (props) => {
             largeRow={props.largeRow}
             smallRow={props.smallRow}
             margin={props.margin}
-            aria-hidden={props.isVisible}
         >
             {props.children}
         </StyledUnorderedInlineList>
